@@ -1,0 +1,80 @@
+# ============================================
+# .gitignore — Tema WordPress Kejari Palu
+# ============================================
+
+# === FOTO PEJABAT (jangan di-commit) ===
+# Ganti dengan foto asli secara manual di server
+assets/images/kepala.png
+assets/images/pembinaan.png
+assets/images/intelijen.png
+assets/images/pidum.png
+assets/images/pidsus.png
+assets/images/datun.png
+assets/images/bb.png
+
+# === SISTEM OPERASI ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# === EDITOR & IDE ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.editorconfig
+
+# === NODE / NPM (jika pakai build tools) ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+
+# === BUILD OUTPUT ===
+dist/
+build/
+*.min.css
+*.min.js
+
+# === COMPOSER (PHP dependencies) ===
+vendor/
+composer.lock
+
+# === LOG & CACHE ===
+*.log
+*.cache
+.cache/
+logs/
+
+# === FILE SEMENTARA ===
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# === ENVIRONMENT & KONFIGURASI SENSITIF ===
+.env
+.env.local
+.env.production
+*.env
+wp-config.php
+wp-config-local.php
+
+# === UPLOAD WORDPRESS ===
+uploads/
+wp-content/uploads/
+
+# === ZIP & ARCHIVE ===
+*.zip
+*.tar.gz
+*.rar
