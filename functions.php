@@ -159,29 +159,191 @@ add_action( 'wp_ajax_nopriv_kejari_search', 'kejari_ajax_search' );
 
 // === CUSTOMIZER ===
 function kejari_customize_register( $wp_customize ) {
-    // Section: Identitas
+
+    // ── Section: Identitas Instansi ──────────────────────────────
     $wp_customize->add_section( 'kejari_identitas', [
-        'title'    => __( 'Identitas Instansi', 'kejari-palu' ),
-        'priority' => 30,
+        'title'       => __( 'Identitas Instansi', 'kejari-palu' ),
+        'description' => __( 'Informasi umum instansi yang tampil di header, footer, dan halaman kontak.', 'kejari-palu' ),
+        'priority'    => 30,
     ]);
-    $fields = [
-        'tagline' => [ 'label' => 'Tagline', 'default' => 'Melayani Masyarakat dengan Sepenuh Hati' ],
-        'address' => [ 'label' => 'Alamat',  'default' => 'Jl. Moh. Yamin No. 97 Palu' ],
-        'phone'   => [ 'label' => 'Telepon', 'default' => '0451-421750' ],
-        'email'   => [ 'label' => 'Email',   'default' => 'kejari.plw@gmail.com' ],
-        'facebook'  => [ 'label' => 'Facebook URL',  'default' => '' ],
-        'twitter'   => [ 'label' => 'Twitter URL',   'default' => '' ],
-        'instagram' => [ 'label' => 'Instagram URL', 'default' => '' ],
-        'youtube'   => [ 'label' => 'YouTube URL',   'default' => '' ],
+
+    $identitas_fields = [
+        'tagline'   => [ 'label' => 'Tagline / Motto',   'default' => 'Melayani Masyarakat dengan Sepenuh Hati' ],
+        'address'   => [ 'label' => 'Alamat Kantor',     'default' => 'Jl. Moh. Yamin No. 97 Palu' ],
+        'phone'     => [ 'label' => 'Nomor Telepon',     'default' => '0451-421750' ],
+        'email'     => [ 'label' => 'Email',             'default' => 'kejari.plw@gmail.com' ],
+        'facebook'  => [ 'label' => 'Facebook URL',      'default' => '' ],
+        'twitter'   => [ 'label' => 'Twitter/X URL',     'default' => '' ],
+        'instagram' => [ 'label' => 'Instagram URL',     'default' => '' ],
+        'youtube'   => [ 'label' => 'YouTube URL',       'default' => '' ],
     ];
-    foreach ( $fields as $key => $field ) {
-        $wp_customize->add_setting( 'kejari_' . $key, [ 'default' => $field['default'], 'sanitize_callback' => 'sanitize_text_field' ] );
-        $wp_customize->add_control( 'kejari_' . $key, [ 'label' => $field['label'], 'section' => 'kejari_identitas', 'type' => 'text' ] );
+
+    foreach ( $identitas_fields as $key => $field ) {
+        $wp_customize->add_setting( 'kejari_' . $key, [
+            'default'           => $field['default'],
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ]);
+        $wp_customize->add_control( 'kejari_' . $key, [
+            'label'   => $field['label'],
+            'section' => 'kejari_identitas',
+            'type'    => 'text',
+        ]);
+    }
+
+    // ── Section: Pejabat — Kepala ────────────────────────────────
+    $wp_customize->add_section( 'kejari_kepala', [
+        'title'       => __( '👤 Kepala Kejaksaan', 'kejari-palu' ),
+        'description' => __( 'Data Kepala Kejaksaan Negeri Palu yang tampil di homepage.', 'kejari-palu' ),
+        'priority'    => 35,
+    ]);
+
+    $kepala_fields = [
+        'kepala_nama'    => [ 'label' => 'Nama Lengkap (beserta gelar)', 'default' => 'Mohamad Rohmadi, S.H., M.H.' ],
+        'kepala_jabatan' => [ 'label' => 'Jabatan Resmi',                'default' => 'Kepala Kejaksaan Negeri Palu' ],
+        'kepala_level'   => [ 'label' => 'Label Badge (huruf kapital)',  'default' => 'PIMPINAN TERTINGGI' ],
+        'kepala_desc'    => [ 'label' => 'Deskripsi Tugas',              'default' => 'Memimpin, mengendalikan, dan bertanggung jawab atas pelaksanaan tugas, fungsi, dan kewenangan Kejaksaan di wilayah hukum Kejaksaan Negeri Palu.' ],
+    ];
+
+    foreach ( $kepala_fields as $key => $field ) {
+        $wp_customize->add_setting( 'kejari_' . $key, [
+            'default'           => $field['default'],
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ]);
+        $wp_customize->add_control( 'kejari_' . $key, [
+            'label'   => $field['label'],
+            'section' => 'kejari_kepala',
+            'type'    => ( $key === 'kepala_desc' ) ? 'textarea' : 'text',
+        ]);
+    }
+
+    // ── Section: Pejabat — Struktural ───────────────────────────
+    $pejabat_list = [
+        'pembinaan' => [
+            'title'   => '👤 Ka. Sub Bag Pembinaan',
+            'jabatan' => 'Kepala Sub Bagian Pembinaan',
+            'desc'    => 'Pengelola manajemen internal meliputi kepegawaian, keuangan, perlengkapan, operasional perkantoran, dan pelayanan teknis administrasi.',
+        ],
+        'intelijen' => [
+            'title'   => '👤 Ka. Seksi Intelijen',
+            'jabatan' => 'Kepala Seksi Intelijen',
+            'desc'    => 'Pelaksana intelijen penegakan hukum, cegah dini, serta pengamanan kebijakan Kejaksaan.',
+        ],
+        'pidum' => [
+            'title'   => '👤 Ka. Seksi Pidana Umum',
+            'jabatan' => 'Kepala Seksi Pidana Umum',
+            'desc'    => 'Melaksanakan pengendalian penuntutan, eksekusi putusan pengadilan, serta administrasi perkara tindak pidana umum.',
+        ],
+        'pidsus' => [
+            'title'   => '👤 Ka. Seksi Pidana Khusus',
+            'jabatan' => 'Kepala Seksi Pidana Khusus',
+            'desc'    => 'Melaksanakan penanganan perkara tindak pidana khusus meliputi penyelidikan, penyidikan, penuntutan, dan eksekusi.',
+        ],
+        'datun' => [
+            'title'   => '👤 Ka. Seksi Datun',
+            'jabatan' => 'Kepala Seksi Perdata dan Tata Usaha Negara',
+            'desc'    => 'Melaksanakan bantuan hukum, pertimbangan hukum, tindakan hukum lain, dan pelayanan hukum di bidang perdata dan tata usaha negara.',
+        ],
+        'bb' => [
+            'title'   => '👤 Ka. Seksi Barang Bukti',
+            'jabatan' => 'Kepala Seksi Barang Bukti dan Barang Rampasan',
+            'desc'    => 'Melaksanakan pengelolaan barang bukti dan barang rampasan negara meliputi penerimaan, penyimpanan, pengamanan, pemeliharaan, dan penyelesaian.',
+        ],
+    ];
+
+    $priority = 40;
+    foreach ( $pejabat_list as $slug => $data ) {
+        $wp_customize->add_section( 'kejari_pejabat_' . $slug, [
+            'title'       => __( $data['title'], 'kejari-palu' ),
+            'description' => __( 'Data pejabat yang tampil di section Struktur Organisasi homepage.', 'kejari-palu' ),
+            'priority'    => $priority,
+        ]);
+
+        $fields = [
+            $slug . '_nama'    => [ 'label' => 'Nama Lengkap',    'default' => 'Nama Pejabat' ],
+            $slug . '_jabatan' => [ 'label' => 'Jabatan',         'default' => $data['jabatan'] ],
+            $slug . '_desc'    => [ 'label' => 'Deskripsi Tugas', 'default' => $data['desc'] ],
+        ];
+
+        foreach ( $fields as $key => $field ) {
+            $wp_customize->add_setting( 'kejari_' . $key, [
+                'default'           => $field['default'],
+                'sanitize_callback' => 'sanitize_text_field',
+                'transport'         => 'refresh',
+            ]);
+            $wp_customize->add_control( 'kejari_' . $key, [
+                'label'   => $field['label'],
+                'section' => 'kejari_pejabat_' . $slug,
+                'type'    => ( strpos( $key, '_desc' ) !== false ) ? 'textarea' : 'text',
+            ]);
+        }
+
+        $priority += 5;
     }
 }
 add_action( 'customize_register', 'kejari_customize_register' );
 
-// Helper get customizer
+// === HELPER: Ambil nilai dari Customizer ===
+// Jika nilai di database kosong atau sama dengan nilai lama yang salah,
+// kembalikan $default agar tampilan tetap benar.
 function kejari_get( $key, $default = '' ) {
-    return get_theme_mod( 'kejari_' . $key, $default );
+    $val = get_theme_mod( 'kejari_' . $key, '' );
+    // Kembalikan default jika kosong
+    return ( $val !== '' && $val !== false ) ? $val : $default;
+}
+
+// === HELPER: Ambil data pejabat dari Customizer ===
+// Default per slug agar tetap tampil walau Customizer belum diisi
+function kejari_get_pejabat( $slug ) {
+    $defaults = [
+        'pembinaan' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Sub Bagian Pembinaan',
+            'desc'    => 'Pengelola manajemen internal meliputi kepegawaian, keuangan, perlengkapan, operasional perkantoran, dan pelayanan teknis administrasi.',
+        ],
+        'intelijen' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Seksi Intelijen',
+            'desc'    => 'Pelaksana intelijen penegakan hukum, cegah dini, serta pengamanan kebijakan Kejaksaan.',
+        ],
+        'pidum' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Seksi Pidana Umum',
+            'desc'    => 'Melaksanakan pengendalian penuntutan, eksekusi putusan pengadilan, serta administrasi perkara tindak pidana umum.',
+        ],
+        'pidsus' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Seksi Pidana Khusus',
+            'desc'    => 'Melaksanakan penanganan perkara tindak pidana khusus meliputi penyelidikan, penyidikan, penuntutan, dan eksekusi sesuai ketentuan peraturan perundang-undangan.',
+        ],
+        'datun' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Seksi Perdata dan Tata Usaha Negara',
+            'desc'    => 'Melaksanakan bantuan hukum, pertimbangan hukum, tindakan hukum lain, dan pelayanan hukum di bidang perdata dan tata usaha negara.',
+        ],
+        'bb' => [
+            'nama'    => 'Nama Pejabat',
+            'jabatan' => 'Kepala Seksi Barang Bukti dan Barang Rampasan',
+            'desc'    => 'Melaksanakan pengelolaan barang bukti dan barang rampasan negara meliputi penerimaan, penyimpanan, pengamanan, pemeliharaan, dan penyelesaian.',
+        ],
+    ];
+
+    $d = $defaults[ $slug ] ?? [ 'nama' => 'Nama Pejabat', 'jabatan' => '', 'desc' => '' ];
+
+    return [
+        'nama'    => kejari_get( $slug . '_nama',    $d['nama'] ),
+        'jabatan' => kejari_get( $slug . '_jabatan', $d['jabatan'] ),
+        'desc'    => kejari_get( $slug . '_desc',    $d['desc'] ),
+    ];
+}
+
+// === HELPER: Ambil data kepala dari Customizer ===
+function kejari_get_kepala() {
+    return [
+        'nama'    => kejari_get( 'kepala_nama',    'Mohamad Rohmadi, S.H., M.H.' ),
+        'jabatan' => kejari_get( 'kepala_jabatan', 'Kepala Kejaksaan Negeri Palu' ),
+        'level'   => kejari_get( 'kepala_level',   'PIMPINAN TERTINGGI' ),
+        'desc'    => kejari_get( 'kepala_desc',    'Memimpin, mengendalikan, dan bertanggung jawab atas pelaksanaan tugas, fungsi, dan kewenangan Kejaksaan di wilayah hukum Kejaksaan Negeri Palu.' ),
+    ];
 }
