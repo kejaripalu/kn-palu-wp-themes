@@ -117,7 +117,22 @@ get_header(); ?>
           <div class="widget">
             <h3 class="widget-title">Kategori</h3>
             <ul class="widget-list">
-              <?php wp_list_categories(['title_li' => '', 'show_count' => 1, 'walker' => new Walker_Category()]); ?>
+              <?php
+                // Ambil hanya kategori utama (parent = 0, tanpa sub-kategori)
+                $main_cats = get_categories([
+                  'parent'     => 0,
+                  'hide_empty' => true,
+                  'orderby'    => 'name',
+                  'order'      => 'ASC',
+                ]);
+                foreach ( $main_cats as $cat ) : ?>
+                <li>
+                  <a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>">
+                    <?php echo esc_html( $cat->name ); ?>
+                  </a>
+                  <span><?php echo $cat->count; ?></span>
+                </li>
+              <?php endforeach; ?>
             </ul>
           </div>
 
