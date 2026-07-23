@@ -21,7 +21,7 @@ get_header(); ?>
         <div class="hero-stats">
           <div><div class="hero-stat-num">7</div><div class="hero-stat-label">Seksi / Bidang</div></div>
           <div><div class="hero-stat-num">34+</div><div class="hero-stat-label">Jaksa Aktif</div></div>
-          <div><div class="hero-stat-num">Palu</div><div class="hero-stat-label">Wilayah Hukum</div></div>
+          <div><div class="hero-stat-num">Kota Palu</div><div class="hero-stat-label">Wilayah Hukum</div></div>
         </div>
       </div>
       <!-- Hero Card Berita -->

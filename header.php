@@ -72,7 +72,12 @@
         <?php if (has_custom_logo()) :
           the_custom_logo();
         else : ?>
-          <div class="logo-icon"><?php echo mb_substr(get_bloginfo('name'), 0, 1); ?></div>
+          <!-- Logo dari file tema -->
+          <div style="width:48px;height:48px;flex-shrink:0;">
+            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png"
+                 alt="<?php bloginfo('name'); ?>"
+                 style="width:100%;height:100%;object-fit:contain;"/>
+          </div>
         <?php endif; ?>
         <div class="logo-text">
           <span class="logo-title"><?php bloginfo('name'); ?></span>
