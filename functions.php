@@ -23,6 +23,59 @@ function kejari_setup() {
 }
 add_action( 'after_setup_theme', 'kejari_setup' );
 
+function kejari_force_primary_berita_link( $items, $args ) {
+    if ( ! isset( $args->theme_location ) || $args->theme_location !== 'primary' ) {
+        return $items;
+    }
+
+    foreach ( $items as $item ) {
+        $title = strtolower( trim( $item->title ) );
+        if ( $title === 'berita' || $item->url === '#' || strpos( $item->url, 'berita' ) !== false ) {
+            $item->url = home_url( '/berita/' );
+        }
+    }
+
+    return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'kejari_force_primary_berita_link', 10, 2 );
+
+// === ROUTE KHUSUS /BERITA ===
+function kejari_register_berita_archive_rules() {
+    add_rewrite_rule( '^berita/?$', 'index.php?post_type=post', 'top' );
+    add_rewrite_rule( '^berita/page/([0-9]{1,})/?$', 'index.php?post_type=post&paged=$matches[1]', 'top' );
+}
+add_action( 'init', 'kejari_register_berita_archive_rules' );
+
+function kejari_force_berita_archive_template( $template ) {
+    $is_berita_slug = ( is_page( 'berita' ) || get_query_var( 'pagename' ) === 'berita' || get_query_var( 'name' ) === 'berita' );
+
+    if ( $is_berita_slug ) {
+        global $wp_query;
+        $wp_query->set( 'post_type', 'post' );
+        $wp_query->set( 'posts_per_page', get_option( 'posts_per_page' ) );
+        $wp_query->set( 'paged', max( 1, get_query_var( 'paged' ) ) );
+        $wp_query->is_page = false;
+        $wp_query->is_singular = false;
+        $wp_query->is_archive = true;
+        $wp_query->is_home = true;
+        $wp_query->is_posts_page = true;
+        status_header( 200 );
+        return locate_template( [ 'archive.php', 'index.php' ] );
+    }
+
+    return $template;
+}
+add_filter( 'template_include', 'kejari_force_berita_archive_template' );
+
+function kejari_flush_berita_rules_once() {
+    if ( get_option( 'kejari_berita_rules_flushed' ) !== '1' ) {
+        flush_rewrite_rules();
+        update_option( 'kejari_berita_rules_flushed', '1' );
+    }
+}
+add_action( 'after_switch_theme', 'kejari_flush_berita_rules_once' );
+add_action( 'init', 'kejari_flush_berita_rules_once' );
+
 // === ENQUEUE STYLES & SCRIPTS ===
 function kejari_scripts() {
     // Google Fonts
@@ -117,6 +170,8 @@ function kejari_reading_time() {
     $reading_time = ceil( $word_count / 200 );
     return $reading_time;
 }
+
+/* Note: smart-quote normalization removed after reported homepage issues. */
 
 // === HELPER: Kategori pertama ===
 function kejari_first_category() {

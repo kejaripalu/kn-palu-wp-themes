@@ -29,22 +29,91 @@ get_header(); ?>
       <!-- Konten Utama -->
       <article class="post-content">
 
-        <?php if (has_post_thumbnail()) : ?>
-        <div class="post-featured-img">
-          <?php the_post_thumbnail('berita-hero', ['style' => 'width:100%;max-height:420px;object-fit:cover;']); ?>
-        </div>
-        <?php endif; ?>
+        <?php
+        $post_content = get_post_field( 'post_content', get_the_ID() );
+        // Featured image if set
+        if ( has_post_thumbnail() ) : ?>
+          <div class="post-featured-img">
+            <?php the_post_thumbnail( 'berita-hero', [ 'style' => 'width:100%;max-height:420px;object-fit:cover;' ] ); ?>
+          </div>
+        <?php else :
+          // Fallback: find first <img> in content and use as featured
+          if ( preg_match( '/<img[^>]+src=["\']([^"\']+)["\']/i', $post_content, $img ) ) : ?>
+            <div class="post-featured-img">
+              <img src="<?php echo esc_url( $img[1] ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" style="width:100%;max-height:420px;object-fit:cover;" />
+            </div>
+          <?php endif;
+        endif;
+
+        // Try to render a video embed with multiple fallbacks:
+        // 1) raw YouTube URL -> wp_oembed_get
+        // 2) <iframe src="...youtube..."> -> use iframe directly
+        // 3) [embed]...[/embed] shortcode
+        // 4) shortcode attribute like link="https://youtu.be/..." or url="..."
+
+        $embedded_shown = false;
+
+        // 1) raw YouTube URL
+        if ( ! $embedded_shown && preg_match( '/https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=[A-Za-z0-9_\-]+(?:&[^\s]*)?|youtu\.be\/[A-Za-z0-9_\-]+)/i', $post_content, $yt ) ) {
+          $yt_url = $yt[0];
+          $embed = wp_oembed_get( $yt_url );
+          if ( $embed ) {
+            echo '<div class="post-video-embed" style="margin:1.5rem 0;">' . $embed . '</div>';
+            $embedded_shown = true;
+          }
+        }
+
+        // 2) iframe embed present in content
+        if ( ! $embedded_shown && preg_match( '/<iframe[^>]+src=["\']([^"\']*(?:youtube\.com|youtu\.be)[^"\']*)["\'][^>]*><\/iframe>/i', $post_content, $iframe_match ) ) {
+          // Extract the full iframe tag
+          if ( preg_match( '/(<iframe[^>]+src=["\'][^"\']*(?:youtube\.com|youtu\.be)[^"\']*["\'][^>]*><\/iframe>)/i', $post_content, $full_iframe ) ) {
+            echo '<div class="post-video-embed" style="margin:1.5rem 0;">' . $full_iframe[1] . '</div>';
+            $embedded_shown = true;
+          }
+        }
+
+        // 3) [embed]...[/embed]
+        if ( ! $embedded_shown && preg_match( '/\[embed\](https?:\/\/[^\[]+)\[\/embed\]/i', $post_content, $embed_sc ) ) {
+          $url = trim( $embed_sc[1] );
+          $embed = wp_oembed_get( $url );
+          if ( $embed ) {
+            echo '<div class="post-video-embed" style="margin:1.5rem 0;">' . $embed . '</div>';
+            $embedded_shown = true;
+          }
+        }
+
+        // 4) Shortcode attribute like link="..." or url="..." containing youtube domain
+        if ( ! $embedded_shown && preg_match( '/(?:link|url|src|video)=["\']([^"\']*(?:youtube\.com|youtu\.be)[^"\']*)["\']/i', $post_content, $attr ) ) {
+          $url = $attr[1];
+          $embed = wp_oembed_get( $url );
+          if ( $embed ) {
+            echo '<div class="post-video-embed" style="margin:1.5rem 0;">' . $embed . '</div>';
+            $embedded_shown = true;
+          } else {
+            // As a last resort, render an iframe wrapper
+            $iframe_src = esc_url( $url );
+            echo '<div class="post-video-embed" style="margin:1.5rem 0;"><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;"><iframe src="' . $iframe_src . '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div></div>';
+            $embedded_shown = true;
+          }
+        }
+        ?>
 
         <!-- Tags & Kategori -->
-        <?php $cats = get_the_category(); $tags = get_the_tags();
-        if ($cats || $tags) : ?>
+        <?php
+        $cats = get_the_category();
+        $tags = get_the_tags();
+        if ( ! empty( $cats ) || ! empty( $tags ) ) : ?>
         <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #f0f3f9;">
-          <?php foreach ((array)$cats as $cat) : ?>
-          <a href="<?php echo get_category_link($cat->term_id); ?>" style="padding:.25rem .75rem;border-radius:99px;background:#f0f3f9;color:#2d3f6e;font-size:.75rem;"><?php echo esc_html($cat->name); ?></a>
-          <?php endforeach; ?>
-          <?php foreach ((array)$tags as $tag) : ?>
-          <a href="<?php echo get_tag_link($tag->term_id); ?>" style="padding:.25rem .75rem;border-radius:99px;background:#fdfbf3;color:#b8890f;font-size:.75rem;">#<?php echo esc_html($tag->name); ?></a>
-          <?php endforeach; ?>
+          <?php if ( ! empty( $cats ) ) : ?>
+            <?php foreach ( $cats as $cat ) : if ( ! $cat || ! is_object( $cat ) ) continue; ?>
+              <a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>" style="padding:.25rem .75rem;border-radius:99px;background:#f0f3f9;color:#2d3f6e;font-size:.75rem;"><?php echo esc_html( $cat->name ); ?></a>
+            <?php endforeach; ?>
+          <?php endif; ?>
+          <?php if ( ! empty( $tags ) ) : ?>
+            <?php foreach ( $tags as $tag ) : if ( ! $tag || ! is_object( $tag ) ) continue; ?>
+              <a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" style="padding:.25rem .75rem;border-radius:99px;background:#fdfbf3;color:#b8890f;font-size:.75rem;">#<?php echo esc_html( $tag->name ); ?></a>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
         <?php endif; ?>
 

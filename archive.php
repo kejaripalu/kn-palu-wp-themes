@@ -54,8 +54,11 @@ get_header(); ?>
             </div>
             <div class="archive-item-body">
               <span class="archive-item-cat"><?php echo kejari_first_category(); ?></span>
-              <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-              <p><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
+              <div class="archive-item-meta">
+                <span class="archive-item-date"><?php echo get_the_date('j F Y'); ?></span>
+              </div>
+              <h2><?php the_title(); ?></h2>
+              <p><?php echo wp_trim_words(get_the_excerpt(), 22); ?></p>
               <span class="archive-item-more">
                 Baca Selengkapnya
                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
@@ -101,16 +104,11 @@ get_header(); ?>
         <div class="widget">
           <h3 class="widget-title">Kategori</h3>
           <ul class="widget-list">
-            <?php wp_list_categories(['title_li' => '', 'show_count' => 1]); ?>
+            <?php wp_list_categories(['title_li' => '', 'show_count' => 1, 'depth' => 1, 'hide_empty' => 1]); ?>
           </ul>
         </div>
         <!-- Arsip -->
-        <div class="widget">
-          <h3 class="widget-title">Arsip</h3>
-          <ul class="widget-list">
-            <?php wp_get_archives(['type' => 'monthly', 'format' => 'custom', 'before' => '<li>', 'after' => '</li>', 'show_post_count' => true]); ?>
-          </ul>
-        </div>
+        <!-- Arsip (dihapus) -->
         <!-- Kontak -->
         <div class="widget widget-contact">
           <h3 class="widget-title">Butuh Bantuan?</h3>

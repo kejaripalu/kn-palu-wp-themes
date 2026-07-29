@@ -1,4 +1,4 @@
-<?php get_header(); ?><!DOCTYPE html>
+<!DOCTYPE html>
 <html <?php language_attributes(); ?> class="scroll-smooth">
 <head>
   <meta charset="<?php bloginfo('charset'); ?>"/>
@@ -35,18 +35,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Kanan: Bahasa & Cari -->
-    <div style="display:flex;align-items:center;gap:.75rem;flex-shrink:0;font-size:.75rem;">
-      <a href="#" style="color:rgba(255,255,255,.75);" onmouseover="this.style.color='#e4c53e'" onmouseout="this.style.color='rgba(255,255,255,.75)'">ID</a>
-      <span style="opacity:.3;color:#fff;">|</span>
-      <a href="#" style="color:rgba(255,255,255,.75);" onmouseover="this.style.color='#e4c53e'" onmouseout="this.style.color='rgba(255,255,255,.75)'">EN</a>
-      <span style="opacity:.3;color:#fff;">|</span>
-      <a href="<?php echo home_url('/?s='); ?>" style="color:rgba(255,255,255,.75);display:flex;align-items:center;gap:.3rem;" onmouseover="this.style.color='#e4c53e'" onmouseout="this.style.color='rgba(255,255,255,.75)'">
-        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/></svg>
-        Cari
-      </a>
     </div>
 
   </div>
