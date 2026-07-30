@@ -12,15 +12,15 @@ get_header(); ?>
         <div class="hero-badge">
           <span></span> Portal Resmi Kejaksaan Negeri Palu
         </div>
-        <h1>Melayani dengan <em>Sepenuh Hati</em></h1>
+        <h1>Integritas dalam Penegakan Hukum, <em>Prima dalam Pelayanan</em></h1>
         <p class="hero-desc"><?php echo esc_html(kejari_get('tagline', 'Kami berkomitmen memberikan pelayanan publik yang transparan, akuntabel, dan berorientasi kepada masyarakat Indonesia.')); ?></p>
         <div class="hero-actions">
           <a href="<?php echo home_url('/layanan'); ?>" class="btn-gold">Akses Layanan Publik</a>
           <a href="<?php echo home_url('/profil'); ?>" class="btn-glass">Tentang Kami</a>
         </div>
         <div class="hero-stats">
-          <div><div class="hero-stat-num">7</div><div class="hero-stat-label">Seksi / Bidang</div></div>
-          <div><div class="hero-stat-num">34+</div><div class="hero-stat-label">Jaksa Aktif</div></div>
+          <div><div class="hero-stat-num">6</div><div class="hero-stat-label">Seksi / Bidang</div></div>
+          <div><div class="hero-stat-num">5+</div><div class="hero-stat-label">Layanan</div></div>
           <div><div class="hero-stat-num">Kota Palu</div><div class="hero-stat-label">Wilayah Hukum</div></div>
         </div>
       </div>
