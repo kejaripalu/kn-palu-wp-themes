@@ -62,7 +62,7 @@ get_header(); ?>
         <h3>SKBMH</h3>
         <p>Surat Keterangan Bebas Masalah Hukum untuk keperluan administrasi.</p>
       </a>
-      <a href="<?php echo home_url('/layanan/pengaduan'); ?>" class="layanan-card">
+      <a href="https://prod.lapor.go.id/" class="layanan-card">
         <div class="layanan-icon" style="background:#f0f3f9;color:#364f88;">
           <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
         </div>
@@ -189,12 +189,10 @@ get_header(); ?>
       <div style="flex:1;height:1px;background:linear-gradient(90deg,#d4a917,transparent);"></div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;max-width:1000px;margin:0 auto;">
+    <div class="pimpinan-grid">
       <?php foreach ($pejabat as $p) : ?>
-      <div class="card-hover" style="text-align:center;background:#fff;border-radius:1rem;padding:1.75rem 1.25rem;border:1px solid #f0f3f9;box-shadow:0 2px 16px rgba(0,0,0,.05);">
-        <div style="width:140px;height:175px;margin:0 auto 1rem;border-radius:.75rem;overflow:hidden;background:#f0ebe3;border:2px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:border-color .25s,box-shadow .25s;"
-             onmouseover="this.style.borderColor='#d4a917';this.style.boxShadow='0 6px 20px rgba(212,169,23,.2)'"
-             onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='0 4px 12px rgba(0,0,0,.08)'">
+      <div class="card-hover pimpinan-card">
+        <div class="foto-wrap">
           <img src="<?php echo esc_url($p['foto']); ?>"
                alt="<?php echo esc_attr($p['nama']); ?>"
                style="width:100%;height:100%;object-fit:cover;"/>

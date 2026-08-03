@@ -76,3 +76,14 @@ style.textContent = `
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 `;
 document.head.appendChild(style);
+
+// Add submenu caret styles via injected style for mobile
+const mobileSubStyle = document.createElement('style');
+mobileSubStyle.textContent = `
+  .mobile-menu .sub-menu { display: none; padding-left: 1rem; }
+  .mobile-menu .menu-item-has-children > a { display: inline-flex; align-items: center; justify-content: space-between; }
+  .submenu-toggle { background: transparent; border: none; font-size: 1rem; padding: .25rem .5rem; margin-left: .5rem; color: var(--navy); cursor: pointer; }
+  .submenu-toggle .caret { display: inline-block; transform-origin: center; transition: transform .18s; }
+  .menu-item-has-children.open > .submenu-toggle .caret, .menu-item-has-children.open > .submenu-toggle .caret { transform: rotate(-180deg); }
+`;
+document.head.appendChild(mobileSubStyle);

@@ -91,8 +91,12 @@ function kejari_scripts() {
     // Theme stylesheet
     wp_enqueue_style( 'kejari-style', get_stylesheet_uri(), ['kejari-fonts'], '1.0.0' );
     // Theme JS
+    // Ensure main.js is loaded from the correct path. Historically stored at theme root `main.js`.
+    $main_js_path = file_exists( get_template_directory() . '/assets/js/main.js' )
+        ? '/assets/js/main.js'
+        : '/main.js';
     wp_enqueue_script( 'kejari-main',
-        get_template_directory_uri() . '/assets/js/main.js',
+        get_template_directory_uri() . $main_js_path,
         [], '1.0.0', true
     );
     // Pass data ke JS
